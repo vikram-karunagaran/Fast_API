@@ -7,7 +7,7 @@ app : FastAPI = FastAPI()
 # This line is a decorator that tells FastAPI that the function below should be called when the user makes a GET request to the root URL (“/”) of the application.
 @app.get("/") 
 def index() -> str:
-    return "This is Rafi Ali"
+    return "This is Fast API Demo"
 
 # This is the function that gets called when a GET request is made to the root URL (“/”). It returns the string “This is Rafi Ali”. The -> str part is a Python type hint that indicates this function returns a string.
 
