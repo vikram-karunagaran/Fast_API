@@ -1,33 +1,84 @@
 from typing import Optional
-from sqlmodel import SQLModel, Field, create_engine,Session
+
+from sqlmodel import Field, Session, SQLModel, create_engine, select
+
 
 class Hero(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
-    name: str
+    name: str = Field(index=True)
     secret_name: str
-    age: Optional[int] = None
-    
-    
-database_connection_str = "postgresql://postgres:rootadmin@localhost:5432/SQL_Model"    
-#echo true only development env not for production
-engine = create_engine(database_connection_str, echo=True)    
+    age: Optional[int] = Field(default=None, index=True)
+
+
+sqlite_file_name = "database.db"
+sqlite_url = f"sqlite:///{sqlite_file_name}"
+
+engine = create_engine(sqlite_url, echo=True)
+
 
 def create_db_and_tables():
+    print ("========================Creating Database Table hero started========================")
     SQLModel.metadata.create_all(engine)
 
-def create_hero():
-    hero1 = Hero(name="Rafi Ali",secret_name="Rafay",age=22)
-    hero2 = Hero(name="Abu Bakr",secret_name="Sadiq",age=42)
-    hero3 = Hero(name="Umer",secret_name="Farooq",age=32)
-    
-    session = Session(engine)
-    session.add(hero1)
-    session.add(hero2)
-    session.add(hero3)
-    session.commit()
-    session.close()
-    
-    
-if __name__ == "__main__":
+
+def create_heroes():
+    print ("========================Write to the Database started========================")
+    hero_1 = Hero(name="Deadpond", secret_name="Dive Wilson")
+    hero_2 = Hero(name="Spider-Boy", secret_name="Pedro Parqueador")
+    hero_3 = Hero(name="Rusty-Man", secret_name="Tommy Sharp", age=48)
+    hero_4 = Hero(name="Tarantula", secret_name="Natalia Roman-on", age=32)
+    hero_5 = Hero(name="Black Lion", secret_name="Trevor Challa", age=35)
+    hero_6 = Hero(name="Dr. Weird", secret_name="Steve Weird", age=36)
+    hero_7 = Hero(name="Captain North America", secret_name="Esteban Rogelios", age=93)
+
+    with Session(engine) as session:
+        session.add(hero_1)
+        session.add(hero_2)
+        session.add(hero_3)
+        session.add(hero_4)
+        session.add(hero_5)
+        session.add(hero_6)
+        session.add(hero_7)
+
+        session.commit()
+
+
+def update_heroes():
+    with Session(engine) as session:
+        print ("========================Database query started========================")
+        statement = select(Hero).where(Hero.name == "Spider-Boy")  # (1)!
+        results = session.exec(statement)  # (2)!
+        hero_1 = results.one()  # (3)!
+        print("Hero 1:", hero_1)  # (4)!
+
+        statement = select(Hero).where(Hero.name == "Captain North America")  # (5)!
+        results = session.exec(statement)  # (6)!
+        hero_2 = results.one()  # (7)!
+        print("Hero 2:", hero_2)  # (8)!
+
+        print ("========================Database update started========================")
+        hero_1.age = 16  # (9)!
+        hero_1.name = "Spider-Youngster"  # (10)!
+        session.add(hero_1)  # (11)!
+
+        hero_2.name = "Captain North America Except Canada"  # (12)!
+        hero_2.age = 110  # (13)!
+        session.add(hero_2)  # (14)!
+
+        session.commit()  # (15)!
+        session.refresh(hero_1)  # (16)!
+        session.refresh(hero_2)  # (17)!
+
+        print("Updated hero 1:", hero_1)  # (18)!
+        print("Updated hero 2:", hero_2)  # (19)!
+    # (20)!
+
+
+def main():
     create_db_and_tables()
-    create_hero()
+    create_heroes()
+    update_heroes()
+
+
+if __name__ == "__main__":
+    main()
