@@ -30,7 +30,6 @@ def create_heroes():
     hero_5 = Hero(name="Black Lion", secret_name="Trevor Challa", age=35)
     hero_6 = Hero(name="Dr. Weird", secret_name="Steve Weird", age=36)
     hero_7 = Hero(name="Captain North America", secret_name="Esteban Rogelios", age=93)
-
     with Session(engine) as session:
         session.add(hero_1)
         session.add(hero_2)
@@ -39,7 +38,6 @@ def create_heroes():
         session.add(hero_5)
         session.add(hero_6)
         session.add(hero_7)
-
         session.commit()
 
 
