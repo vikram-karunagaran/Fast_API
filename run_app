@@ -1,1 +1,1 @@
-uvicorn main:app --reload
+uvicorn '00_hello world'.main:app --reload
