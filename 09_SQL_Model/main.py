@@ -55,7 +55,9 @@ def update_heroes():
         print("Hero 2:", hero_2)  # (8)!
 
         print ("========================Database update started========================")
-        hero_1.age = 16  # (9)!
+        hero_1.age = 16  # Modify existing class object, look for age which changes from None to 16
+        # Before - Hero(age=None, id=9, name='Spider-Boy', secret_name='Pedro Parqueador')
+        # After - Hero(age=16, id=9, name='Spider-Boy', secret_name='Pedro Parqueador')
         hero_1.name = "Spider-Youngster"  # (10)!
         session.add(hero_1)  # (11)!
 
